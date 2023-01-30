@@ -29,7 +29,7 @@ async def connect_event(sid, message):
     count += 1
     reply_message = f'Connected {username}, count: {count}'
     logger.info(reply_message)
-    await sio.emit('response', 
+    await sio.emit('response',
                    {'data': reply_message})
 
 
