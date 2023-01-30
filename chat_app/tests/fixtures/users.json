@@ -1,0 +1,16 @@
+{
+    "users": {
+        "user1":{
+            "username":"usename1",
+            "email":"usename1@gmail.com",
+            "full_name":"Aaa Bbb",
+            "password":"password1"
+        },
+        "user2":{
+            "username":"username2",
+            "email":"username2@gmail.com",
+            "full_name":"Ccc Ddd",
+            "password":"password2"
+        }
+    }
+}

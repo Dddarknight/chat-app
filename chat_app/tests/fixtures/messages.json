@@ -1,0 +1,14 @@
+{
+    "messages": {
+        "message1":{
+            "content":"content1",
+            "room":"12",
+            "sid":"asdf"
+        },
+        "message2":{
+            "content":"content2",
+            "room":"34",
+            "sid":"qwerty"
+        }
+    }
+}

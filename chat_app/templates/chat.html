@@ -1,0 +1,56 @@
+<html>
+    <head>
+        <title>SocketIO-Chat</title>
+        <script type="text/javascript" src="//code.jquery.com/jquery-1.4.2.min.js"></script>
+        <script type="text/javascript" src="//cdn.socket.io/4.4.1/socket.io.min.js"></script>
+        <script type="text/javascript" charset="utf-8">
+            
+            var socket;
+            $(document).ready(function(){
+                socket = io.connect()
+                socket.on('connect', function() {
+                    socket.emit('connect_event', {username: $('#user').text()});
+                });
+                socket.on('chat', function(data) {
+                    console.log(data);
+                    var user = "{{user}}";
+                    $('#chat').val($('#chat').val() + data.username + ':\n' + data.data + '\n');
+                    $('#chat').scrollTop($('#chat')[0].scrollHeight);
+                });
+                socket.on('response', function(msg) {
+                    console.log('Received: ' + msg.data);
+                });
+                $('#text').keypress(function(e) {
+                    var code = e.keyCode || e.which;
+                    if (code == 13) {
+                        text = $('#text').val();
+                        $('#text').val('');
+                        socket.emit('message', {'data': text, 'room': $('#join_room').val()});
+                    }
+                });
+                $('form#join').submit(function(event) {
+                    console.log($('#join_room').val());
+                    socket.emit('join', {room: $('#join_room').val(), username: $('#user').text()});
+                    return false;
+                });
+            });
+            function leave_room() {
+                socket.emit('left', {room: $('#join_room').val(), username: $('#user').text()}, function() {
+                    socket.disconnect();
+                    window.location.href = "/";
+                });
+            }
+        </script>
+    </head>
+    <body>
+        <h1>SocketIO-Chat</h1>
+        <div id="user">{{ user }}</div>
+        <form id="join" method="POST" action='#'>
+            <input type="text" name="join_room" id="join_room" placeholder="Room Name">
+            <input type="submit" value="Join Room">
+        </form>
+        <textarea id="chat" cols="80" rows="20"></textarea><br><br>
+        <input id="text" size="80" placeholder="Enter your message here"><br><br>
+        <a href="#" onclick="leave_room();">Leave this room</a>
+    </body>
+</html>

@@ -1,0 +1,35 @@
+[tool.poetry]
+name = "chat-app"
+version = "0.1.0"
+description = ""
+authors = ["Dddarknight <9801677@gmail.com>"]
+readme = "README.md"
+packages = [{include = "chat_app"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "^0.89.1"
+fastapi-socketio = "^0.0.9"
+python-socketio = "^5.7.2"
+uvicorn = {extras = ["standard"], version = "^0.20.0"}
+eventlet = "^0.33.3"
+pillow = "^9.4.0"
+python-dotenv = "^0.21.1"
+alembic = "1.8.1"
+python-jose = "^3.3.0"
+databases = {extras = ["postgresql"], version = "^0.7.0"}
+psycopg2 = "^2.9.5"
+passlib = "^1.7.4"
+python-multipart = "^0.0.5"
+aiohttp = "^3.8.3"
+Jinja2 = "^3.1.2"
+bcrypt = "^4.0.1"
+
+
+
+[tool.poetry.dev-dependencies]
+pytest = "^7.2.1"
+httpx = "^0.23.3"
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
