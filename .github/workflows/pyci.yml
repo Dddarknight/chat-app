@@ -27,5 +27,6 @@ jobs:
       - name: Run tests
         env:
           DATABASE_URL: sqlite:///./test.db
+          ALGORITHM: HS256
         run: |
           make test
