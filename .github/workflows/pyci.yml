@@ -28,5 +28,6 @@ jobs:
         env:
           DATABASE_URL: sqlite:///./test.db
           ALGORITHM: HS256
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
         run: |
           make test
