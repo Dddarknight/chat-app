@@ -30,6 +30,14 @@ python-versions = ">=3.7"
 frozenlist = ">=1.1.0"
 
 [[package]]
+name = "aiosqlite"
+version = "0.18.0"
+description = "asyncio bridge to the standard sqlite3 module"
+category = "dev"
+optional = false
+python-versions = ">=3.7"
+
+[[package]]
 name = "alembic"
 version = "1.8.1"
 description = "A database migration tool for SQLAlchemy."
@@ -793,11 +801,12 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "38349b59cae87b6c71e535c7dd684ab24af03a35c2cebc03cd4dc03194305a15"
+content-hash = "d341df1bb49de68fe3f6bc40746e629a3c476d26397da7d818d0e1d41170cdf0"
 
 [metadata.files]
 aiohttp = []
 aiosignal = []
+aiosqlite = []
 alembic = []
 anyio = []
 async-timeout = []
