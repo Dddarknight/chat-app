@@ -1,9 +1,13 @@
 # chat-app
 
 The app provides the backend service for the chat.
+
 The API endpoints are described in API Documentaion (Swagger), that can be found at /docs.
+
 After registration, the user can log in (/login) and then join the particular room and begin to chat.
+
 The chat server is implemented with the python-socketio tool.
+
 The informaion about entered and left rooms, about messages and users' likes is stored in the database (PostgreSQL). 
 
 
