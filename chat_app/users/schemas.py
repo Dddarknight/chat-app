@@ -1,8 +1,8 @@
-from typing import Union, List, Optional
+from typing import Union, List
 
 from pydantic import BaseModel
 
-from chat_app.messages.schemas import Room
+from chat_app.rooms.schemas import DbRoom
 
 
 class UserBase(BaseModel):
@@ -18,34 +18,7 @@ class UserCreate(UserBase):
 
 class User(UserBase):
     id: int
-    rooms: List[Room]
+    rooms: List[DbRoom]
 
     class Config:
         orm_mode = True
-
-
-class ProfileBase(BaseModel):
-    pass
-
-
-class ProfileCreate(ProfileBase):
-    user_id: int
-
-
-class Profile(ProfileBase):
-    id: int
-    user_id: int
-    image: Optional[str] = None
-
-    class Config:
-        orm_mode = True
-
-
-class Session(BaseModel):
-    username: str
-    sid: str
-
-
-class Room(BaseModel):
-    username: str
-    room: str

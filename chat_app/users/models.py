@@ -1,8 +1,8 @@
-from sqlalchemy import Column, Integer, String, LargeBinary, ForeignKey
+from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
 
 from chat_app.database import Base
-from chat_app.messages.models import UserRoom
+from chat_app.rooms.models import UserRoom
 
 
 class User(Base):
@@ -20,15 +20,3 @@ class User(Base):
         "Room", secondary=UserRoom, back_populates="users"
     )
     profile = relationship("Profile", uselist=False, back_populates="user")
-
-
-class Profile(Base):
-    __tablename__ = "profiles"
-
-    id = Column(Integer, primary_key=True, index=True)
-    image = Column(LargeBinary)
-    thumbnail_50 = Column(LargeBinary)
-    thumbnail_100 = Column(LargeBinary)
-    thumbnail_400 = Column(LargeBinary)
-    user_id = Column(Integer, ForeignKey('users.id'))
-    user = relationship("User", back_populates="profile")

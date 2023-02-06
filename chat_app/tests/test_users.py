@@ -1,5 +1,5 @@
+import os
 import pytest
-from datetime import timedelta
 
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
@@ -9,7 +9,7 @@ from chat_app.server import app
 from chat_app.database import Base
 from chat_app.dependencies import get_db
 from chat_app.tests.utils import get_test_data
-from chat_app.tokens.token import create_access_token
+from chat_app.services import auth_service
 
 
 test_data_users = get_test_data('users.json')
@@ -64,11 +64,11 @@ def test_get_user(test_db):
 def test_update_user(test_db):
     data_initial = test_data_users["users"]["user1"]
     user = client.post('/sign-up', json=data_initial)
-    access_token_expires = timedelta(minutes=30)
-    access_token = create_access_token(
-        data={"sub": user.json()['username']},
-        expires_delta=access_token_expires
-    )
+    db_user = auth_service.authenticate_user(
+        TestingSessionLocal(),
+        test_data_users["users"]["user1"]["username"],
+        test_data_users["users"]["user1"]["password"])
+    access_token = auth_service.get_access_token(db_user)
     data_changed = test_data_users["users"]["user2"]
     user = client.put('/users/1',
                       json=data_changed,
@@ -80,12 +80,12 @@ def test_update_user(test_db):
 
 def test_delete_user(test_db):
     data = test_data_users["users"]["user1"]
-    user = client.post('/sign-up', json=data)
-    access_token_expires = timedelta(minutes=30)
-    access_token = create_access_token(
-        data={"sub": user.json()['username']},
-        expires_delta=access_token_expires
-    )
+    client.post('/sign-up', json=data)
+    db_user = auth_service.authenticate_user(
+        TestingSessionLocal(),
+        test_data_users["users"]["user1"]["username"],
+        test_data_users["users"]["user1"]["password"])
+    access_token = auth_service.get_access_token(db_user)
     client.delete('/users/1',
                   headers={"Authorization": f"Bearer {access_token}"})
     response = client.get('/users/1')
@@ -104,7 +104,7 @@ def test_add_sid(test_db):
     assert user.json()['session_id'] == sid
 
 
-def test_add_room(test_db):
+def test_add_and_delete_room(test_db):
     data = test_data_users["users"]["user1"]
     client.post('/sign-up', json=data)
     room = '12'

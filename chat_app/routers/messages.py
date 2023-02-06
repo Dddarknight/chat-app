@@ -27,15 +27,3 @@ async def create_message(*,
             status_code=status.HTTP_400_BAD_REQUEST,
             detail='No such user.')
     return crud.create_message(db=db, message=message, user_id=db_user.id)
-
-
-@router.post('/like', response_model=schemas.Like)
-async def add_like(*,
-                   like: schemas.LikeCreate,
-                   db: Session = Depends(dependencies.get_db)):
-    db_message = crud.get_message(db=db, id=like.message_id)
-    if not db_message:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail='No such message.')
-    return crud.add_like(db=db, like=like)

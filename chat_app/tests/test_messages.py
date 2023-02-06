@@ -1,5 +1,4 @@
 import pytest
-from datetime import timedelta
 
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
@@ -10,7 +9,7 @@ from chat_app.database import Base
 from chat_app.dependencies import get_db
 from chat_app.tests.utils import get_test_data
 from chat_app.tests.test_users import test_data_users
-from chat_app.tokens.token import create_access_token
+from chat_app.services import auth_service
 
 
 test_data_messages = get_test_data('messages.json')
@@ -54,11 +53,11 @@ def test_create_and_get_message(test_db):
     sid_data = {'username': user_data['username'], 'sid': sid}
     user = client.post('/user/sid', json=sid_data)
 
-    access_token_expires = timedelta(minutes=30)
-    access_token = create_access_token(
-        data={"sub": user.json()['username']},
-        expires_delta=access_token_expires
-    )
+    db_user = auth_service.authenticate_user(
+        TestingSessionLocal(),
+        test_data_users["users"]["user1"]["username"],
+        test_data_users["users"]["user1"]["password"])
+    access_token = auth_service.get_access_token(db_user)
 
     message = client.post('/create-message',
                           json=message_data,
