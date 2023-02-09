@@ -132,3 +132,5 @@ chat-env/
 postgres-data/
 spec.txt
 test.db
+.env1
+.env2
