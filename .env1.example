@@ -1,0 +1,9 @@
+POSTGRES_DB=chat1
+POSTGRES_USER=
+POSTGRES_PASSWORD=
+ALGORITHM="HS256"
+SECRET_KEY=
+
+DATABASE_URL="postgresql+psycopg2://your-username:your-password@postgres_db_1/chat1"
+API_PORT=5000
+HOST="host.docker.internal"
