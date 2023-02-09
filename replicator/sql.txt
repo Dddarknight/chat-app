@@ -1,0 +1,71 @@
+CREATE OR REPLACE FUNCTION notify_users() RETURNS TRIGGER AS $$
+    DECLARE
+    row RECORD;
+    output TEXT;
+    
+    BEGIN
+    IF (TG_OP = 'DELETE') THEN
+      row = OLD;
+    ELSE
+      row = NEW;
+    END IF;
+    
+    output = concat('OPERATION=', TG_OP, ',USERNAME=', row.username, ',HASHED_PASSWORD=', row.hashed_password, ',FULL_NAME=', row.full_name, ',EMAIL=', row.email, ',SESSION_ID=', row.session_id);
+    PERFORM pg_notify('users_changes1',output);
+    RETURN NULL;
+    END;
+$$ LANGUAGE plpgsql;
+
+
+
+
+CREATE OR REPLACE FUNCTION notify_users() RETURNS TRIGGER AS $$
+    DECLARE
+    row RECORD;
+    output TEXT;
+    
+    BEGIN
+    IF (TG_OP = 'DELETE') THEN
+      row = OLD;
+      output = concat('OPERATION=', TG_OP, ',OLD_EMAIL=', row.email);
+    ELSIF (TG_OP = 'INSERT') THEN
+      row = NEW;
+      output = concat('OPERATION=', TG_OP, ',USERNAME=', row.username, ',HASHED_PASSWORD=', row.hashed_password, ',FULL_NAME=', row.full_name, ',EMAIL=', row.email, ',SESSION_ID=', row.session_id);
+    ELSE
+      row = NEW;
+      output = concat('OPERATION=', TG_OP, ',USERNAME=', row.username, ',HASHED_PASSWORD=', row.hashed_password, ',FULL_NAME=', row.full_name, ',EMAIL=', row.email, ',SESSION_ID=', row.session_id, ',OLD_EMAIL=', OLD.email);
+    END IF;
+    
+    PERFORM pg_notify('users_changes1',output);
+    RETURN NULL;
+    END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION notify_users() RETURNS TRIGGER AS $$
+    DECLARE
+    row RECORD;
+    output TEXT;
+    
+    BEGIN
+    IF (TG_OP = 'DELETE') THEN
+      row = OLD;
+      output = concat('OPERATION=', TG_OP, ',OLD_EMAIL=', row.email);
+    ELSIF (TG_OP = 'INSERT') THEN
+      row = NEW;
+      output = concat('OPERATION=', TG_OP, ',USERNAME=', row.username, ',HASHED_PASSWORD=', row.hashed_password, ',FULL_NAME=', row.full_name, ',EMAIL=', row.email, ',SESSION_ID=', row.session_id);
+    ELSE
+      row = NEW;
+      output = concat('OPERATION=', TG_OP, ',USERNAME=', row.username, ',HASHED_PASSWORD=', row.hashed_password, ',FULL_NAME=', row.full_name, ',EMAIL=', row.email, ',SESSION_ID=', row.session_id, ',OLD_EMAIL=', OLD.email);
+    END IF;
+    
+    PERFORM pg_notify('users_changes2',output);
+    RETURN NULL;
+    END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_users
+  AFTER INSERT OR UPDATE OR DELETE
+  ON users
+  FOR EACH ROW
+  EXECUTE PROCEDURE notify_users();
