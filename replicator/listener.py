@@ -1,6 +1,5 @@
 import logging
 import os
-import time
 import asyncio
 import psycopg2
 from dotenv import load_dotenv
@@ -32,7 +31,7 @@ connection_1.set_isolation_level(
     psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
 
 cursor_1 = connection_1.cursor()
-cursor_1.execute(f"LISTEN users_changes1;")
+cursor_1.execute("LISTEN users_changes1;")
 
 
 connection_2 = psycopg2.connect(
@@ -44,7 +43,7 @@ connection_2.set_isolation_level(
     psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
 
 cursor_2 = connection_2.cursor()
-cursor_2.execute(f"LISTEN users_changes2;")
+cursor_2.execute("LISTEN users_changes2;")
 
 
 def handle_notify(connection, cursor):
@@ -64,11 +63,3 @@ asyncio.set_event_loop(loop)
 loop.add_reader(connection_1, handle_notify, connection_1, cursor_2)
 loop.add_reader(connection_2, handle_notify, connection_2, cursor_1)
 loop.run_forever()
-
-
-while True:
-    val = time.time()
-    x = f"NOTIFY users_changes, '{val}';"
-    logger.info(x)
-    cursor_1.execute(x)
-    time.sleep(1)
