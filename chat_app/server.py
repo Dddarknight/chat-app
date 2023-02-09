@@ -1,6 +1,7 @@
 import uvicorn
 from fastapi import FastAPI, Request, Depends
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 
 from chat_app.routers import (
@@ -8,8 +9,6 @@ from chat_app.routers import (
 )
 from chat_app import dependencies
 from chat_app.database import database, engine, Base
-# from chat_app.users import models as users_models
-# from chat_app.messages import models as messages_models
 from chat_app.sio_server import sio_app
 from chat_app.utils import templates
 from chat_app.logger import setup_logger
@@ -49,6 +48,11 @@ async def index(request: Request,
         "chat.html",
         {"request": request, "user": user.username})
     return response
+
+
+@app.get('/health-check', response_class=JSONResponse)
+async def check_health(request: Request):
+    return JSONResponse(jsonable_encoder({'health': 'ok'}))
 
 
 app.mount("/", sio_app)

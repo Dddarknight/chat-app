@@ -5,7 +5,7 @@ from fastapi.responses import Response
 from sqlalchemy.orm import Session
 
 from chat_app import dependencies
-from chat_app.profiles import schemas, crud
+from chat_app.profiles import schemas, repo
 from chat_app.routers.utils import get_image_value
 
 
@@ -17,7 +17,7 @@ async def create_profile(*,
                          user_id: str,
                          image: UploadFile,
                          db: Session = Depends(dependencies.get_db)):
-    db_profile = crud.get_profile_by_user_id(db=db, user_id=user_id)
+    db_profile = repo.get_profile_by_user_id(db=db, user_id=user_id)
     if db_profile:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -33,7 +33,7 @@ async def create_profile(*,
     thumbnail_400 = base64.b64encode(
         get_image_value(image_file_content, (400, 400))
     )
-    return crud.create_profile(db=db,
+    return repo.create_profile(db=db,
                                profile=schemas.ProfileCreate(
                                    **{'user_id': user_id}),
                                image=image_bytes,
@@ -46,7 +46,7 @@ async def create_profile(*,
 async def get_user_image(*,
                          profile_id: int,
                          db: Session = Depends(dependencies.get_db)):
-    db_profile = crud.get_profile(db=db, id=profile_id)
+    db_profile = repo.get_profile(db=db, id=profile_id)
     if db_profile is None:
         raise HTTPException(status_code=404, detail="Profile not found")
     image = base64.b64decode(db_profile.image)
@@ -57,7 +57,7 @@ async def get_user_image(*,
 async def get_user_thumbnail_50(*,
                                 profile_id: int,
                                 db: Session = Depends(dependencies.get_db)):
-    db_profile = crud.get_profile(db=db, id=profile_id)
+    db_profile = repo.get_profile(db=db, id=profile_id)
     if db_profile is None:
         raise HTTPException(status_code=404, detail="Profile not found")
     image = base64.b64decode(db_profile.thumbnail_50)
@@ -68,7 +68,7 @@ async def get_user_thumbnail_50(*,
 async def get_user_thumbnail_100(*,
                                  profile_id: int,
                                  db: Session = Depends(dependencies.get_db)):
-    db_profile = crud.get_profile(db=db, id=profile_id)
+    db_profile = repo.get_profile(db=db, id=profile_id)
     if db_profile is None:
         raise HTTPException(status_code=404, detail="Profile not found")
     image = base64.b64decode(db_profile.thumbnail_100)
@@ -79,7 +79,7 @@ async def get_user_thumbnail_100(*,
 async def get_user_thumbnail_400(*,
                                  profile_id: int,
                                  db: Session = Depends(dependencies.get_db)):
-    db_profile = crud.get_profile(db=db, id=profile_id)
+    db_profile = repo.get_profile(db=db, id=profile_id)
     if db_profile is None:
         raise HTTPException(status_code=404, detail="Profile not found")
     image = base64.b64decode(db_profile.thumbnail_400)

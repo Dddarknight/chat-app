@@ -45,13 +45,13 @@ client = TestClient(app)
 
 def test_create_and_get_message(test_db):
     user_data = test_data_users["users"]["user1"]
-    user = client.post('/sign-up', json=user_data)
+    client.post('/sign-up', json=user_data)
 
     message_data = test_data_messages["messages"]["message1"]
 
     sid = message_data['sid']
     sid_data = {'username': user_data['username'], 'sid': sid}
-    user = client.post('/user/sid', json=sid_data)
+    client.post('/user/sid', json=sid_data)
 
     db_user = auth_service.authenticate_user(
         TestingSessionLocal(),
@@ -66,6 +66,5 @@ def test_create_and_get_message(test_db):
 
     messages = client.get('/messages',
                           headers={"Authorization": f"Bearer {access_token}"})
-    print(messages)
     for message in messages.json():
         assert message['content'] == message_data['content']
